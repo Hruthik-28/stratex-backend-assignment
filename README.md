@@ -31,7 +31,7 @@ In order to successfully complete this guide, you need:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your_username/stratex-assignment.git
+git clone https://github.com/Hruthik-28/stratex-backend-assignment
 ```
 ### 2. Navigate to the Project Directory
 ```bash
