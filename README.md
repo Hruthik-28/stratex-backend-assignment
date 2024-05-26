@@ -1,3 +1,21 @@
+## Table of Contents
+- [Important Links](#important-links)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Seller Routes](#seller-routes)
+  - [registerSeller](#registerseller)
+  - [loginSeller](#loginseller)
+  - [addBooks](#addbooks)
+  - [getAllBooks](#getallbooks)
+  - [editBook](#editbook)
+  - [deleteBook](#deletebook)
+  - [deleteAllBooks](#deleteallbooks)
+- [User Routes](#user-routes)
+  - [registerUser](#registeruser)
+  - [loginUser](#loginuser)
+  - [getAllBooks](#getallbooks-1)
+  - [getABook](#getabook)
+
 ## Important Links
 | Content                                  | Link |
 | -----------                              | ----------- |
