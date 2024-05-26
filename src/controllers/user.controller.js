@@ -66,12 +66,12 @@ export const registerUser = asyncHandler(async (req, res) => {
     });
 
     if (!createdUser) {
-        throw new ApiError(500, "Seller registration failed. Please try again");
+        throw new ApiError(500, "User registration failed. Please try again");
     }
 
     return res
         .status(201)
-        .json(new ApiResponse(201, {}, "Seller registered successfully"));
+        .json(new ApiResponse(201, {}, "User registered successfully"));
 });
 
 export const loginUser = asyncHandler(async (req, res) => {
