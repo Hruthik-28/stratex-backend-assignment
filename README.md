@@ -177,44 +177,64 @@ file: [file]
 
 ### `getAllBooks`
 
-This endpoint retrieves a list of books available from the seller.
+This endpoint retrieves a paginated list of books available from the seller, with options for sorting and pagination.
 
 **Route:** GET `/api/v1/books`
 
 #### Request
 - No request body is required for this request.
 
+**Query Parameters:**
+- `page`: The page number of results to retrieve (default: 1).
+- `limit`: The maximum number of books per page (default: 10).
+- `sortBy`: The field to sort the books by (options: 'title', 'author', 'createdAt', 'updatedAt', 'publishedDate', 'price'; default: 'createdAt').
+- `sortType`: The order in which to sort the books ('asc' for ascending, 'desc' for descending; default: 'asc').
+
 **Responses:**
 - 200: All Books fetched successfully.
 - 404: No Books found.
+
+**Example Request:**
+```bash
+GET /api/v1/books?page=1&limit=10&sortBy=title&sortType=asc
+```
 
 **Example Response**
 ```json
 {
     "statusCode": 200,
-    "data": [
-        {
-            "id": 31,
-            "title": "The Great Gatsby",
-            "author": "F. Scott Fitzgerald",
-            "publishedDate": "1925-04-10T00:00:00.000Z",
-            "price": 10.99,
-            "sellerId": 2,
-            "createdAt": "2024-05-26T08:54:58.446Z",
-            "updatedAt": "2024-05-26T08:54:58.446Z"
-        },
-        {
-            "id": 32,
-            "title": "1984",
-            "author": "George Orwell",
-            "publishedDate": "1949-06-08T00:00:00.000Z",
-            "price": 8.99,
-            "sellerId": 2,
-            "createdAt": "2024-05-26T08:54:58.446Z",
-            "updatedAt": "2024-05-26T08:54:58.446Z"
+    "data": {
+        "books": [
+            {
+                "id": 31,
+                "title": "The Great Gatsby",
+                "author": "F. Scott Fitzgerald",
+                "publishedDate": "1925-04-10T00:00:00.000Z",
+                "price": 10.99,
+                "sellerId": 2,
+                "createdAt": "2024-05-26T08:54:58.446Z",
+                "updatedAt": "2024-05-26T08:54:58.446Z"
+            },
+            {
+                "id": 32,
+                "title": "1984",
+                "author": "George Orwell",
+                "publishedDate": "1949-06-08T00:00:00.000Z",
+                "price": 8.99,
+                "sellerId": 2,
+                "createdAt": "2024-05-26T08:54:58.446Z",
+                "updatedAt": "2024-05-26T08:54:58.446Z"
+            }
+        ],
+        "pagination": {
+            "totalItems": 25,
+            "totalPages": 3,
+            "currentPage": 1,
+            "itemsPerPage": 10,
+            "hasNextPage": true
         }
-    ]
-    "message": "All Books fetched Successfully",
+    },
+    "message": "All Books Fetched Successfully",
     "success": true
 }
 ```
@@ -389,6 +409,67 @@ Logs in an existing user.
 
 ### `getAllBooks`
 
+This endpoint retrieves a paginated list of books available from the seller, with options for sorting and pagination.
+
+**Route:** GET `/api/v1/books`
+
+#### Request
+- No request body is required for this request.
+
+**Query Parameters:**
+- `page`: The page number of results to retrieve (default: 1).
+- `limit`: The maximum number of books per page (default: 10).
+- `sortBy`: The field to sort the books by (options: 'title', 'author', 'createdAt', 'updatedAt', 'publishedDate', 'price'; default: 'createdAt').
+- `sortType`: The order in which to sort the books ('asc' for ascending, 'desc' for descending; default: 'asc').
+
+**Responses:**
+- 200: All Books fetched successfully.
+- 404: No Books found.
+
+**Example Request:**
+```bash
+GET /api/v1/books?page=1&limit=10&sortBy=title&sortType=asc
+```
+
+**Example Response**
+```json
+{
+    "statusCode": 200,
+    "data": {
+        "books": [
+            {
+                "id": 31,
+                "title": "The Great Gatsby",
+                "author": "F. Scott Fitzgerald",
+                "publishedDate": "1925-04-10T00:00:00.000Z",
+                "price": 10.99,
+                "sellerId": 2,
+                "createdAt": "2024-05-26T08:54:58.446Z",
+                "updatedAt": "2024-05-26T08:54:58.446Z"
+            },
+            {
+                "id": 32,
+                "title": "1984",
+                "author": "George Orwell",
+                "publishedDate": "1949-06-08T00:00:00.000Z",
+                "price": 8.99,
+                "sellerId": 2,
+                "createdAt": "2024-05-26T08:54:58.446Z",
+                "updatedAt": "2024-05-26T08:54:58.446Z"
+            }
+        ],
+        "pagination": {
+            "totalItems": 25,
+            "totalPages": 3,
+            "currentPage": 1,
+            "itemsPerPage": 10,
+            "hasNextPage": true
+        }
+    },
+    "message": "All Books Fetched Successfully",
+    "success": true
+}
+```
 Retrieves all books from the system.
 
 **Route:** GET `/api/v1/user/getAllBooks`
