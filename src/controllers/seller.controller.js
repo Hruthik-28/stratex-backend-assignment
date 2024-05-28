@@ -136,16 +136,76 @@ export const addBooks = asyncHandler(async (req, res) => {
 
 export const getAllBooks = asyncHandler(async (req, res) => {
     const sellerId = req.user.id;
+    const {
+        page = 1,
+        limit = 10,
+        sortBy = "creadtedAt",
+        sortType = "asc",
+    } = req.query;
 
-    const books = await prisma.book.findMany({ where: { sellerId } });
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    const skip = (pageNumber - 1) * limitNumber;
 
-    if (!books) {
-        throw new ApiError(404, "No Books found");
+    const sortOrder = sortType.toLowerCase() === "desc" ? "desc" : "asc";
+
+    const validSortFields = [
+        "title",
+        "author",
+        "createdAt",
+        "updatedAt",
+        "publishedDate",
+        "price"
+    ];
+    const sortField = validSortFields.includes(sortBy) ? sortBy : "createdAt";
+    console.log(sortField, sortOrder);
+    // Get total number of books of particular seller by aggregating of 
+    const totalBooks = await prisma.book.aggregate({
+        _count: {
+            id: true,
+        },
+        where: {
+            sellerId,
+        },
+    });
+
+    const totalCount = totalBooks._count.id;
+
+    const books = await prisma.book.findMany({
+        where: {
+            sellerId,
+        },
+        skip: skip,
+        take: limitNumber,
+        orderBy: {
+            [sortField]: sortOrder,
+        },
+    });
+
+    if (!books || books.length === 0) {
+        throw new ApiError(404, "No Books Found");
     }
+
+    const totalPages = Math.ceil(totalCount / limitNumber);
+    const hasNextPage = pageNumber < totalPages;
+
+    const pagination = {
+        totalItems: totalCount,
+        totalPages: totalPages,
+        currentPage: pageNumber,
+        itemsPerPage: limitNumber,
+        hasNextPage: hasNextPage,
+    };
 
     return res
         .status(200)
-        .json(new ApiResponse(200, books, "All Books fetched Successfully"));
+        .json(
+            new ApiResponse(
+                200,
+                { books, pagination },
+                "All Books Fetched Successfully"
+            )
+        );
 });
 
 export const editBook = asyncHandler(async (req, res) => {

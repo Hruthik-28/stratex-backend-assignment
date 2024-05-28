@@ -122,15 +122,69 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const getAllBooks = asyncHandler(async (req, res) => {
-    const books = await prisma.book.findMany();
+    const {
+        page = 1,
+        limit = 10,
+        sortBy = "creadtedAt",
+        sortType = "asc",
+    } = req.query;
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const sortOrder = sortType.toLowerCase() === "desc" ? "desc" : "asc";
+    const validSortFields = [
+        "createdAt",
+        "title",
+        "author",
+        "updatedAt",
+        "publishedDate",
+        "price"
+    ];
+    const sortField = validSortFields.includes(sortBy) ? sortBy : "createdAt";
+
+    // Get total number of books by aggregating
+    const totalBooks = await prisma.book.aggregate({
+        _count: {
+            id: true,
+        },
+    });
+
+    const totalCount = totalBooks._count.id;
+
+    const books = await prisma.book.findMany({
+        skip: skip,
+        take: limitNumber,
+        orderBy: {
+            [sortField]: sortOrder,
+        },
+    });
 
     if (!books || books.length === 0) {
         throw new ApiError(404, "No Books Found");
     }
 
+    const totalPages = Math.ceil(totalCount / limitNumber);
+    const hasNextPage = pageNumber < totalPages;
+
+    const pagination = {
+        totalItems: totalCount,
+        totalPages: totalPages,
+        currentPage: pageNumber,
+        itemsPerPage: limitNumber,
+        hasNextPage: hasNextPage,
+    };
+
     return res
         .status(200)
-        .json(new ApiResponse(200, books, "All Books Fetched Successfully"));
+        .json(
+            new ApiResponse(
+                200,
+                { books, pagination },
+                "All Books Fetched Successfully"
+            )
+        );
 });
 
 export const getABook = asyncHandler(async (req, res) => {

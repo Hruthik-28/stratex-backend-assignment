@@ -2,7 +2,7 @@ import fs from "fs";
 import { parse } from "csv-parse";
 
 const parseCSVFile = (filePath) => {
-    if (!filePath) return nulll;
+    if (!filePath) return null;
     return new Promise((resolve, reject) => {
         const data = [];
 
