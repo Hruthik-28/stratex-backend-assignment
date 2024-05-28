@@ -409,7 +409,7 @@ Logs in an existing user.
 
 ### `getAllBooks`
 
-This endpoint retrieves a paginated list of books available from the seller, with options for sorting and pagination.
+This endpoint retrieves a paginated list of books available, with options for sorting and pagination.
 
 **Route:** GET `/api/v1/books`
 
