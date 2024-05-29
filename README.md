@@ -35,7 +35,7 @@ git clone https://github.com/Hruthik-28/stratex-backend-assignment
 ```
 ### 2. Navigate to the Project Directory
 ```bash
-cd stratex-assignment
+cd stratex-backend-assignment
 ```
 ### 3. Install Dependencies
 ```bash
@@ -54,7 +54,11 @@ npm install
 ```bash
 npx prisma migrate dev --name init
 ```
-### 7. Run the apllication
+### 7. Seed the DB with some users and sellers
+```bash
+npm run seed
+```
+### 8. Run the apllication
 ```bash
 # For production
 npm start
@@ -137,6 +141,66 @@ Logs in an existing seller.
     "message": "Seller loggedIn Successfully",
     "success": true
 }
+```
+---
+
+### `logoutSeller`
+
+Logs out an existing seller.
+
+**Route:** POST `/api/v1/seller/logout`
+
+**Request Body:** None
+
+**Responses:**
+- 200: Seller logged out successfully.
+- 500: Internal server error.
+
+**Example Response**
+```json
+{
+    "statusCode": 200,
+    "data": {},
+    "message": "Seller logout successful !!!.",
+    "success": true
+}
+```
+---
+
+### `refreshAccessToken`
+
+Refreshes the access token for a logged-in seller using their refresh token.
+
+**Route:** POST `/api/v1/seller/refresh-token`
+
+**Request Body**
+- refreshToken (string, optional): Refresh token of the seller. Required if not provided in cookies.
+
+**Responses:**
+- 200: Access token refreshed successfully.
+- 401: Unauthorized request or invalid refresh token.
+- 500: Internal server error.
+
+**Example Request**
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY2MjE0MzUyMiwiZXhwIjoxNjYyNjAyNzIyfQ.OO43PeyV22aC0Hg7CvDvJEEJe1JvdVg-jxH9iPT46Mw"
+}
+
+ ```
+
+**Example Response**
+```json
+{
+    "statusCode": 200,
+    "data": {
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6ImRlZXB0aGkiLCJlbWFpbCI6ImRlZXB0aGlAZ21haWwuY29tIiwidHlwZSI6InNlbGxlciIsImlhdCI6MTcxNjcxMzY3MywiZXhwIjoxNzE2ODAwMDczfQ.mRy8iiPV3OcBYX2bPW2yScuWfNo0hswrduZuPB_Ff0Y",
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNjcxMzY3MywiZXhwIjoxNzE3NTc3NjczfQ.7iumOkzwD6dOMylPVPxGPaEJh7bsV_9SNaaW3Yvwdt0"
+    },
+    "message": "Access token refreshed",
+    "success": true
+}
+
 ```
 ---
 
@@ -540,5 +604,65 @@ Retrieves a specific book from the system.
     "message": "All Books Fetched Successfully",
     "success": true
 }
+```
+---
+
+### `logoutUser`
+
+Logs out an existing user.
+
+**Route:** POST `/api/v1/user/logout`
+
+**Request Body:** None
+
+**Responses:**
+- 200: Seller logged out successfully.
+- 500: Internal server error.
+
+**Example Response**
+```json
+{
+    "statusCode": 200,
+    "data": {},
+    "message": "User logout successful !!!.",
+    "success": true
+}
+```
+---
+
+### `refreshAccessToken`
+
+Refreshes the access token for a logged-in user using their refresh token.
+
+**Route:** POST `/api/v1/user/refresh-token`
+
+**Request Body**
+- refreshToken (string, optional): Refresh token of the seller. Required if not provided in cookies.
+
+**Responses:**
+- 200: Access token refreshed successfully.
+- 401: Unauthorized request or invalid refresh token.
+- 500: Internal server error.
+
+**Example Request**
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY2MjE0MzUyMiwiZXhwIjoxNjYyNjAyNzIyfQ.OO43PeyV22aC0Hg7CvDvJEEJe1JvdVg-jxH9iPT46Mw"
+}
+
+ ```
+
+**Example Response**
+```json
+{
+    "statusCode": 200,
+    "data": {
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6ImRlZXB0aGkiLCJlbWFpbCI6ImRlZXB0aGlAZ21haWwuY29tIiwidHlwZSI6InNlbGxlciIsImlhdCI6MTcxNjcxMzY3MywiZXhwIjoxNzE2ODAwMDczfQ.mRy8iiPV3OcBYX2bPW2yScuWfNo0hswrduZuPB_Ff0Y",
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNjcxMzY3MywiZXhwIjoxNzE3NTc3NjczfQ.7iumOkzwD6dOMylPVPxGPaEJh7bsV_9SNaaW3Yvwdt0"
+    },
+    "message": "Access token refreshed",
+    "success": true
+}
+
 ```
 ---

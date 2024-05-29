@@ -4,6 +4,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import ApiError from "../utils/ApiError.js";
 import bcrypt from "bcryptjs";
 import { generateAccessToken, generateRefreshToken } from "../helpers/token.js";
+import { options } from "../../constants.js";
 
 export const generateAccessAndRefreshToken = async (schema, id) => {
     if (schema !== "user" && schema !== "seller") {
@@ -102,12 +103,6 @@ export const loginUser = asyncHandler(async (req, res) => {
         foundUser.id
     );
 
-    const options = {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-    };
-
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
@@ -117,6 +112,59 @@ export const loginUser = asyncHandler(async (req, res) => {
                 200,
                 { accessToken, refreshToken },
                 "User loggedIn Successfully"
+            )
+        );
+});
+
+export const logoutUser = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+
+    const user = await prisma.user.updateMany({
+        where: { id: userId },
+        data: { accessToken: null, refreshToken: null },
+    });
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, {}, "User logout successfull !!!."));
+});
+
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+    const incomingRefreshToken =
+        req.cookies?.refreshToken || req.body.refreshToken;
+    const userId = req.user.id;
+
+    if (!incomingRefreshToken) {
+        throw new ApiError(401, "unauthorized request");
+    }
+
+    const user = await prisma.user.findFirst({
+        where: { refreshToken: incomingRefreshToken },
+    });
+
+    if (!user) {
+        throw new ApiError(401, "Invalid refresh token");
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+        "user",
+        userId
+    );
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    accessToken,
+                    refreshToken,
+                },
+                "Access token refreshed"
             )
         );
 });
@@ -140,7 +188,7 @@ export const getAllBooks = asyncHandler(async (req, res) => {
         "author",
         "updatedAt",
         "publishedDate",
-        "price"
+        "price",
     ];
     const sortField = validSortFields.includes(sortBy) ? sortBy : "createdAt";
 

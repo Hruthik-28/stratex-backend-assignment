@@ -5,6 +5,7 @@ import ApiError from "../utils/ApiError.js";
 import bcrypt from "bcryptjs";
 import { generateAccessAndRefreshToken } from "./user.controller.js";
 import parseCSVFile from "../utils/csvParser.js";
+import { options } from "../../constants.js";
 
 export const registerSeller = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
@@ -70,12 +71,6 @@ export const loginSeller = asyncHandler(async (req, res) => {
         foundSeller.id
     );
 
-    const options = {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-    };
-
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
@@ -87,6 +82,59 @@ export const loginSeller = asyncHandler(async (req, res) => {
                 "Seller loggedIn Successfully"
             )
         );
+});
+
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+    const incomingRefreshToken =
+        req.cookies?.refreshToken || req.body.refreshToken;
+    const sellerId = req.user.id;
+
+    if (!incomingRefreshToken) {
+        throw new ApiError(401, "unauthorized request");
+    }
+
+    const seller = await prisma.seller.findFirst({
+        where: { refreshToken: incomingRefreshToken },
+    });
+
+    if (!seller) {
+        throw new ApiError(401, "Invalid refresh token");
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+        "seller",
+        sellerId
+    );
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    accessToken,
+                    refreshToken,
+                },
+                "Access token refreshed"
+            )
+        );
+});
+
+export const logoutSeller = asyncHandler(async (req, res) => {
+    const sellerId = req.user.id;
+
+    await prisma.seller.updateMany({
+        where: { id: sellerId },
+        data: { accessToken: null, refreshToken: null },
+    });
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, {}, "Seller logout successfull !!!."));
 });
 
 export const addBooks = asyncHandler(async (req, res) => {
@@ -155,11 +203,11 @@ export const getAllBooks = asyncHandler(async (req, res) => {
         "createdAt",
         "updatedAt",
         "publishedDate",
-        "price"
+        "price",
     ];
     const sortField = validSortFields.includes(sortBy) ? sortBy : "createdAt";
     console.log(sortField, sortOrder);
-    // Get total number of books of particular seller by aggregating of 
+    // Get total number of books of particular seller by aggregating of
     const totalBooks = await prisma.book.aggregate({
         _count: {
             id: true,

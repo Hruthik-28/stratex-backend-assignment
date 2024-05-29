@@ -6,6 +6,8 @@ import {
     editBook,
     getAllBooks,
     loginSeller,
+    logoutSeller,
+    refreshAccessToken,
     registerSeller,
 } from "../controllers/seller.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -15,12 +17,15 @@ const router = Router();
 
 router.route("/register").post(registerSeller);
 router.route("/login").post(loginSeller);
+
+router.route("/book/:bookId").delete(verifyJWT, deleteBook);
+router.route("/logout").post(verifyJWT, logoutSeller);
+router.route("/refresh-token").post(verifyJWT, refreshAccessToken);
 router
     .route("/books")
     .post(verifyJWT, upload.single("file"), addBooks)
     .get(verifyJWT, getAllBooks)
     .patch(verifyJWT, editBook)
     .delete(verifyJWT, deleteAllBooks);
-router.route("/book/:bookId").delete(verifyJWT, deleteBook);
 
 export default router;
