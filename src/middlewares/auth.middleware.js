@@ -23,10 +23,11 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
             user = await prisma.user.findUnique({
                 where: { id: decodedToken?.id },
             });
+        } else if (decodedToken?.type === "seller") {
+            user = await prisma.seller.findUnique({
+                where: { id: decodedToken?.id },
+            });
         }
-        user = await prisma.seller.findUnique({
-            where: { id: decodedToken?.id },
-        });
 
         if (!user) {
             throw new ApiError(401, "Invalid access token");
