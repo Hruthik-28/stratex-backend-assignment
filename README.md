@@ -19,6 +19,7 @@
 ## Important Links
 | Content                                  | Link |
 | -----------                              | ----------- |
+| Video Link                               | [Link](https://youtu.be/87k6emzix9E?feature=shared)       |
 | Postman Collection / Documentation      | [Link](https://documenter.getpostman.com/view/28570926/2sA3QqhDJB)       |
 
 ## Prerequisites

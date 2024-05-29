@@ -206,7 +206,7 @@ export const getAllBooks = asyncHandler(async (req, res) => {
         "price",
     ];
     const sortField = validSortFields.includes(sortBy) ? sortBy : "createdAt";
-    console.log(sortField, sortOrder);
+
     // Get total number of books of particular seller by aggregating of
     const totalBooks = await prisma.book.aggregate({
         _count: {
@@ -297,7 +297,7 @@ export const editBook = asyncHandler(async (req, res) => {
             200,
             {
                 id: editedBook.id,
-                title: editBook.title,
+                title: editedBook.title,
                 price: editedBook.price,
                 author: editedBook.author,
                 sellerId,
